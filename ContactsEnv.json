@@ -1,0 +1,27 @@
+{
+	"id": "17b50af6-7bf2-4cf4-abd5-95c24b96ce70",
+	"name": "ContactsEnv",
+	"values": [
+		{
+			"key": "base_url",
+			"value": "https://thinking-tester-contact-list.herokuapp.com",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "username",
+			"value": "mastermanifestor@gmail.com",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "password",
+			"value": "creator",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2025-07-13T13:07:52.921Z",
+	"_postman_exported_using": "Postman/11.53.5"
+}

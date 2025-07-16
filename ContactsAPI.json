@@ -1,0 +1,353 @@
+{
+	"info": {
+		"_postman_id": "96e29455-516f-4b20-ae3d-2656cc46d38f",
+		"name": "2025ContactsAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25769315"
+	},
+	"item": [
+		{
+			"name": "Create Login Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();",
+							"const tokenID = response.token;",
+							"",
+							"pm.variables.set(\"token_id\", tokenID) ;",
+							"",
+							"console.log(\"tokenID ===> \" +tokenID);",
+							"",
+							"pm.test(\"verify token is generated\", function(){",
+							"        pm.expect(response.token).to.exist;",
+							"        pm.expect(response.token).to.be.not.null;",
+							"})",
+							"",
+							"pm.test(\"verify login is successful\", function(){",
+							"    pm.expect(response.user.id).to.be.not.null;",
+							" ",
+							"    pm.expect(response.user.firstName).eqls(\"Powerful\");",
+							"    pm.expect(response.user.lastName).eqls(\"Creator\");",
+							"    pm.expect(response.user.email).eqls(pm.environment.get(\"username\"));",
+							"",
+							"",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{username}}\",\n    \"password\": \"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://thinking-tester-contact-list.herokuapp.com/users/login",
+					"protocol": "https",
+					"host": [
+						"thinking-tester-contact-list",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Contact",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"console.log(\"contact id ==> \"+resp._id);",
+							"const add_id =  pm.variables.set(\"contact_id\",resp._id );",
+							"",
+							"",
+							"pm.test(\"verify response status code is 201\", function(){",
+							"    pm.response.to.have.status(201);",
+							"       ",
+							"})",
+							"",
+							"pm.test(\"verify new contact id is generated\", function(){",
+							"    pm.expect(resp._id).exist;",
+							"    pm.expect(resp._id).to.be.not.null;",
+							"   ",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token_id}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{vault:contactstokenid}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"Creator VaibhavS\",\n    \"lastName\": \"Powerful Manifestor\",\n    \"birthdate\": \"1970-01-01\",\n    \"email\": \"{{$randomEmail}}\",\n    \"phone\": \"{{$randomPhoneNumber}}\",\n    \"street1\": \"{{$randomStreetAddress}}\",\n    \"street2\": \"{{$randomStreetAddress}}\",\n    \"city\": \"Lucknow\",\n    \"stateProvince\": \"Uttar Pradesh\",\n    \"postalCode\": \"226010\",\n    \"country\": \"INDIA\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://thinking-tester-contact-list.herokuapp.com/contacts",
+					"protocol": "https",
+					"host": [
+						"thinking-tester-contact-list",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"contacts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Contact List",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token_id}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{vault:contactstokenid}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "https://thinking-tester-contact-list.herokuapp.com/contacts",
+					"protocol": "https",
+					"host": [
+						"thinking-tester-contact-list",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"contacts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Contact",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"console.log(\"get contact id ==> \"+resp._id);",
+							"",
+							"pm.test(\"verify get new contact id is matched\", function(){",
+							"    pm.expect(resp._id).exist;",
+							"    pm.expect(resp._id).to.be.not.null;",
+							"    pm.expect(resp._id).equals(pm.variables.get(\"contact_id\"));",
+							"    ",
+							"})",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token_id}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{vault:contactstokenid}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://thinking-tester-contact-list.herokuapp.com/contacts/{{contact_id}}",
+					"protocol": "https",
+					"host": [
+						"thinking-tester-contact-list",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"contacts",
+						"{{contact_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Contact",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"console.log(\"update contact id ==> \"+resp._id);",
+							"",
+							"pm.test(\"verify update new contact id is matched\", function(){",
+							"    pm.expect(resp._id).exist;",
+							"    pm.expect(resp._id).to.be.not.null;",
+							"    pm.expect(resp._id).equals(pm.variables.get(\"contact_id\"));",
+							"    ",
+							"})",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token_id}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{vault:contactstokenid}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"PowerCreatorVaibhavS\",\n    \"lastName\": \"Master Manifestor\",\n    \"birthdate\": \"1992-02-02\",\n    \"email\": \"amiller@realmanifestation.com\",\n    \"phone\": \"{{$randomPhoneNumber}}\",\n    \"street1\": \"{{$randomStreetAddress}}\",\n    \"street2\": \"Wakad\",\n    \"city\": \"Pune\",\n    \"stateProvince\": \"MH\",\n    \"postalCode\": \"411057\",\n    \"country\": \"INDIA\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://thinking-tester-contact-list.herokuapp.com/contacts/{{contact_id}}",
+					"protocol": "https",
+					"host": [
+						"thinking-tester-contact-list",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"contacts",
+						"{{contact_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete contact",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const msg = pm.response.text();",
+							"console.log(msg);",
+							"",
+							"pm.test(\"Delete Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"",
+							"});",
+							"",
+							"pm.test(\"Verify Delete msg \", function () {",
+							"   pm.expect(msg).eqls(\"Contact deleted\");",
+							"",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token_id}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{vault:contactstokenid}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "https://thinking-tester-contact-list.herokuapp.com/contacts/{{contact_id}}",
+					"protocol": "https",
+					"host": [
+						"thinking-tester-contact-list",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"contacts",
+						"{{contact_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
